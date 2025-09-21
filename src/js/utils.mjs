@@ -3,35 +3,35 @@ export function qs(selector, parent = document) {
   return parent.querySelector(selector);
 }
 
-// retrieve data from localstorage
+// retrieve data from localStorage
 export function getLocalStorage(key) {
-  return JSON.parse(localStorage.getItem(key));
+  try {
+    return JSON.parse(localStorage.getItem(key)) || [];
+  } catch {
+    return [];
+  }
 }
 
-// save data to local storage
+// save data to localStorage
 export function setLocalStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
 
 // set a listener for both touchend and click
 export function setClick(selector, callback) {
-  qs(selector).addEventListener("touchend", (event) => {
+  const el = qs(selector);
+  if (!el) return;
+  
+  el.addEventListener("touchend", (event) => {
     event.preventDefault();
     callback();
   });
-  qs(selector).addEventListener("click", callback);
+  el.addEventListener("click", callback);
 }
 
-// get URL parameter
+// get query param from URL
 export function getParam(param) {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   return urlParams.get(param);
 }
-
-// get total number of items in the cart
-export function getCartCount() {
-  const cartItems = getLocalStorage("so-cart") || [];
-  return cartItems.length;
-}
-
